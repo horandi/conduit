@@ -8,7 +8,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 import time
 from adatok import user, article
 
-
 class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezárása
     def setup_method(self):
         service = Service(executable_path=ChromeDriverManager().install())
@@ -92,8 +91,7 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
         sign_in_btn2 = self.browser.find_element(By.XPATH, '//button[@class="btn btn-lg btn-primary pull-xs-right"]')
         sign_in_btn2.click()
 
-        profile_name_btn = self.browser.find_element(By.XPATH,
-                                                     '//a[@href="#/[name]"]')  # adott usernek a neve az adatok-ból, milyen zárójel kell?
+        profile_name_btn = self.browser.find_element(By.XPATH, '//a[@href="#/[name]"]')  # adott usernek a neve az adatok-ból, milyen zárójel kell?
         assert profile_name_btn.is_displayed()
 
     # 4. Adatok listázásának ellenőrzése:
@@ -102,12 +100,10 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
         mitast_tag = self.browser.find_element(By.XPATH, '//a[@href="#/tag/mitast"]')
         mitast_tag.click()
 
-        mitast_filter = self.browser.find_element(By.XPATH,
-                                                  '//a[@href="#/tag/mitast"]')  # megegyezik a fentivel, más kell
+        mitast_filter = self.browser.find_element(By.XPATH, '//a[@href="#/tag/mitast"]')  # megegyezik a fentivel, más kell
         assert mitast_filter.is_displayed()
 
     # 5. Több oldalas lista bejárásának ellenőrzése:
-
     def test_list_of_pages(self):
         pages = []
         page_number_btns = self.browser.find_elements(By.XPATH, '//a[@class="page-link"]')
@@ -118,7 +114,6 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
         assert len(pages) == len(page_number_btns)
 
     # 6. Új adatbevitel ellenőrzése:
-
     def test_new_data(self):
         new_article_btn = self.browser.find_elements(By.XPATH, '//a[@href="#/editor"]')
         new_article_btn.click
@@ -156,6 +151,20 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
         assert new_title.text == article["title"][2]
 
     # 9. Adat törlésének ellenőrzése:
+    def test_delete_data(self):
+        delete_btn = self.browser.find_element(By.XPATH, '//i[@class="ion-trash-a"]')
+        delete_btn.click()
+        profile_name_btn = self.browser.find_element(By.XPATH,
+                                                     '//a[@href="#/[name]"]')  # adott usernek a neve az adatok-ból, milyen zárójel kell?
+        profile_name_btn.click()
+        article_list = self.browser.find_element(By.XPATH, '//a[@class="router-link-exact-active active"]')
+        assert article_list.text != article["title"]  # a saját cikkek listájában nem szerepel a törölt cím, nincs kész
+
+
+
+
+
+
 
     # 10. Adatok lementésének ellenőrzése:
 

@@ -8,8 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 import time
 from adatok import user
 
-class TestConduit(object):
-    #Böngésző és az adott oldal megnyitása, bezárása
+class TestConduit(object): #Böngésző és az adott oldal megnyitása, bezárása
     def setup_method(self):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
@@ -29,19 +28,23 @@ class TestConduit(object):
     def test_cookies(self):
         decline_btn = self.browser.find_element(By.XPATH,'//button[@class="cookie__bar__buttons__button cookie__bar__buttons__button--decline"]')
         accept_btn = self.browser.find_element(By.XPATH, '//button[@class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')
+        cookie_panel = self.browser.find_element(By.XPATH, '//div[@class="cookie cookie__bar cookie__bar--bottom-left"]')
 
+        assert cookie_panel.is_displayed()
         assert decline_btn.is_enabled()
         assert accept_btn.is_enabled()
 
         accept_btn.click()
-### accept_btn már nincs ott assert?
+
+        ### assert not cookie_panel.is_displayed() nem fut le
+        ### assert not accept_btn.is_displayed()
 
 # 2. Regisztráció folyamata helyes adatokkal:
     def test_registration(self):
         sign_up_btn = self.browser.find_element(By.LINK_TEXT, 'Sign up')
         sign_up_btn.click
 
-### assert a link megváltozik a klikk után tartalmazza 'regist' szó részletet
+        assert browser.current_url != "http://localhost:1667/#/" # annak ellenőrzése, hogy az URL megváltozik azaz új oldalra visz kattintásra
         time.sleep(2)
 
         username_input = self.browser.find_element(By.XPATH,'//input[@placeholder="Username"]')
@@ -84,7 +87,7 @@ class TestConduit(object):
         sign_in_btn2 =  self.browser.find_element(By.XPATH,'//button[@class="btn btn-lg btn-primary pull-xs-right"]')
         sign_in_btn2.click()
 
-        profile_name_btn = self.browser.find_element(By.XPATH, '//a[@href="#/[name]"]')  # adott usernek a neve, milyen zárójel kell?
+        profile_name_btn = self.browser.find_element(By.XPATH, '//a[@href="#/[name]"]')  # adott usernek a neve az adatok-ból, milyen zárójel kell?
         assert profile_name_btn.is_displayed()
 
 # 4. Adatok listázásának ellenőrzése:
@@ -94,7 +97,21 @@ class TestConduit(object):
     def test_list_of_pages(self):
 
         page_number_btns = self.browser.find_element(By.XPATH, '//a[@class="page-link"]')
-        for page in page_number_btns:
+        # for page in page_number_btns:
+            page.click()
+            active_page = self.browser.find_element(By.XPATH, '//li[@class="page-item active"]')
+
+# 6. Új adatbevitel ellenőrzése:
+
+# 7. Ismételt és sorozatos adatbevitel ellenőrzése adatforrásból:
+
+# 8. Meglévő adat módosításának ellenőrzése:
+
+# 9. Adat törlésének ellenőrzése:
+
+# 10. Adatok lementésének ellenőrzése:
+
+# 11. Kijelentkezés folyamatának ellenőrzése:
 
 
 

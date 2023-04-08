@@ -18,11 +18,23 @@ browser.get(URL)
 #browser.maximize_window()
 
 
+cookie_panel = browser.find_element(By.XPATH, '//div[@class="cookie cookie__bar cookie__bar--bottom-left"]')
+accept_btn = browser.find_element(By.XPATH, '//button[@class="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')
+assert cookie_panel.is_displayed()
+assert accept_btn.is_displayed()
+
+#accept_btn.click()
 
 sign_up_btn = browser.find_element(By.LINK_TEXT, 'Sign up')
 sign_in_btn = browser.find_element(By.LINK_TEXT, 'Sign in')
-time.sleep(1)
-# sign_up_btn.click()
+
+sign_up_btn.click()
+# get_url = browser.current_url
+assert browser.current_url != "http://localhost:1667/#/"
+
+
+
+
 # time.sleep(1)
 # username_input = browser.find_element(By.XPATH,'//input[@placeholder="Username"]')
 # email_input = browser.find_element(By.XPATH,'//input[@placeholder="Email"]')

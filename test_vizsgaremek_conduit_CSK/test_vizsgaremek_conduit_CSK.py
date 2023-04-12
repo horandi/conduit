@@ -119,11 +119,11 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
     # 6. Új adatbevitel ellenőrzése:
     def test_new_data(self):
         new_article_btn = self.browser.find_elements(By.XPATH, '//a[@href="#/editor"]')
-        new_article_btn.click
+        new_article_btn.click()
 
         article_title = WebDriverWait(self.browser, 2).until(
             EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
-        article_about = self.browser.find_elements(By.XPATH, '//input[@placeholder="What\s this article about?"]')
+        article_about = self.browser.find_element(By.XPATH, '//input[@placeholder="What\'s this article about?"]')
         article_text = self.browser.find_elements(By.XPATH,
                                                   '//textarea[@placeholder="Write your article (in markdown)"]')
         article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
@@ -143,10 +143,10 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
     # 8. Meglévő adat módosításának ellenőrzése:
     def test_update_data(self):
         edit_btn = self.browser.find_element(By.XPATH, '//i[@class="ion-edit"]')
-        edit_btn.click
+        edit_btn.click()
         article_title = WebDriverWait(self.browser, 2).until(
             EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
-        article_title.clear  # van ilyen?
+        article_title.clear()  # van ilyen?
         article_title.send_keys(article["title"])[2]  # dictionary-ből kéne?
         publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
         publish_article_btn.click()
@@ -175,7 +175,7 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
     def test_sign_out(self):
         logout_btn = self.browser.find_element(By.PARTIAL_LINK_TEXT, 'Log out')
         assert logout_btn.is_enabled()
-        logout_btn.click
+        logout_btn.click()
         assert not logout_btn.is_enabled()
         sign_in_btn = self.browser.find_element(By.LINK_TEXT, 'Sign in')
         assert sign_in_btn.is_enabled()

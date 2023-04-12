@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import time
+import allure
+
 from adatok import user, article
 
 class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezárása
@@ -45,9 +47,9 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
     # 2. Regisztráció folyamata helyes adatokkal:
     def test_registration(self):
         sign_up_btn = self.browser.find_element(By.LINK_TEXT, 'Sign up')
-        sign_up_btn.click
+        sign_up_btn.click()
 
-        assert browser.current_url != "http://localhost:1667/#/"  # annak ellenőrzése, hogy az URL megváltozik azaz új oldalra visz kattintásra
+        assert self.browser.current_url != "http://localhost:1667/#/"  # annak ellenőrzése, hogy az URL megváltozik azaz új oldalra visz kattintásra
         time.sleep(2)
 
         username_input = self.browser.find_element(By.XPATH, '//input[@placeholder="Username"]')  # waitre átírni?
@@ -85,13 +87,14 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
 
         email_input = self.browser.find_element(By.XPATH, '//input[@placeholder="Email"]')
         password_input = self.browser.find_element(By.XPATH, '//input[@placeholder="Password"]')
+
         email_input.send_keys(user['email'])
         password_input.send_keys(user['password'])
 
         sign_in_btn2 = self.browser.find_element(By.XPATH, '//button[@class="btn btn-lg btn-primary pull-xs-right"]')
         sign_in_btn2.click()
 
-        profile_name_btn = self.browser.find_element(By.XPATH, '//a[@href="#/[name]"]')  # adott usernek a neve az adatok-ból, milyen zárójel kell?
+        profile_name_btn = self.browser.find_element(By.XPATH, '//a[@href="#/[name]"]')  ### adott usernek a neve az adatok-ból, milyen zárójel kell?
         assert profile_name_btn.is_displayed()
 
     # 4. Adatok listázásának ellenőrzése:

@@ -7,12 +7,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import time
 import csv
-import allure
+# import allure kell?
+
 
 from adatok import user, article
 from functions import login, new_article
 
-class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezárása
+# Böngésző és az adott oldal megnyitása, bezárása:
+class TestConduit(object):
     def setup_method(self):
         service = Service(executable_path=ChromeDriverManager().install())
         options = Options()
@@ -30,6 +32,9 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
 
     # 1. Adatkezelési nyilatkozat elfogadásának ellenőrzése:
     def test_cookies(self):
+        # gombok megkeresése, ellenőrzése:
+
+        time.sleep(2)
         decline_btn = self.browser.find_element(By.XPATH,
                                                 '//button[@class="cookie__bar__buttons__button cookie__bar__buttons__button--decline"]')
         accept_btn = self.browser.find_element(By.XPATH,
@@ -41,6 +46,8 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
         assert decline_btn.is_enabled()
         assert accept_btn.is_enabled()
 
+        # kattintás után a gombok, panel eltűnésének ellenőrzése:
+
         accept_btn.click()
         time.sleep(2)
         # assert not cookie_panel.is_displayed() nem fut le
@@ -49,10 +56,16 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
 
     # 2. Regisztráció folyamata helyes adatokkal:
     def test_registration(self):
+        # gombok, mezők, üzenetek megkeresése, mezők kitöltése:
+
+        time.sleep(2)
         sign_up_btn = self.browser.find_element(By.LINK_TEXT, 'Sign up')
         sign_up_btn.click()
+        time.sleep(2)
 
-        assert self.browser.current_url != "http://localhost:1667/#/"  # annak ellenőrzése, hogy az URL megváltozik azaz új oldalra visz kattintásra
+        # annak ellenőrzése, hogy az URL megváltozik azaz új oldalra visz kattintásra:
+
+        assert self.browser.current_url != "http://localhost:1667/#/"
         time.sleep(2)
 
         username_input = self.browser.find_element(By.XPATH, '//input[@placeholder="Username"]')  # waitre átírni?
@@ -66,6 +79,7 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
         password_input.send_keys(user['password'])
 
         sign_up_reg_btn.click()
+        time.sleep(2)
 
         reg_message_big = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.XPATH, '//div[@class="swal-title"]')))
@@ -77,14 +91,19 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
         reg_ok_btn = self.browser.find_element(By.XPATH, '//button[@class="swal-button swal-button--confirm"]')
         reg_ok_btn.click()
         time.sleep(2)
+
+        # akkor sikeres a belépés, ha a kijelentkezés gombja elérhető lesz:
+
         logut_btn = self.browser.find_element(By.XPATH, '//a[@class="nav-link"]')
 
         assert logut_btn.is_enabled()
         logut_btn.click()
 
-    # 3. Bejelentkezés ellenőrzése helyes adatokkal
-
+    # 3. Bejelentkezés ellenőrzése helyes adatokkal:
     def test_login(self):
+         # gombok, mezők megkeresése, mezők kitöltése:
+
+        time.sleep(2)
         sign_in_btn = self.browser.find_element(By.LINK_TEXT, 'Sign in')
         sign_in_btn.click()
         time.sleep(2)
@@ -97,20 +116,32 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
 
         sign_in_btn2 = self.browser.find_element(By.XPATH, '//button[@class="btn btn-lg btn-primary pull-xs-right"]')
         sign_in_btn2.click()
+        time.sleep(2)
 
-        profile_name_btn = self.browser.find_element(By.XPATH, '//a[@class="nav-link"]') # adott usernek a neve az adatok-ból, milyen zárójel kell? a[@href="#/[name]"] f'{name}'?
+# adott usernek a neve az adatok-ból, milyen zárójel kell? a[@href="#/[name]"] vagy f'{name}' text?
+
+        # sikeres a bejelentkezés ha a felhasználónév gombja megjelenik:
+
+        profile_name_btn = self.browser.find_elements(By.XPATH, '//a[@class="nav-link"]')[4]
         assert profile_name_btn.is_displayed()
 
     # 4. Adatok listázásának ellenőrzése:
     def test_tagfilter(self):
+        # bejelentkezés után egy tag kiválasztása:
+
+        time.sleep(2)
         login(self.browser)
 
         # tag dictionary?
         mitast_tag = self.browser.find_element(By.XPATH, '//a[@href="#/tag/mitast"]')
         mitast_tag.click()
+        time.sleep(2)
 
-        mitast_filter = self.browser.find_element(By.XPATH,
-                                                  '//a[@href="#/tag/mitast"]')  # megegyezik a fentivel, más kell
+# mitast_filter = self.browser.find_element(By.XPATH,'//a[@href="#/tag/mitast"]')  # megegyezik a fentivel, más kell
+
+        # kiválasztott filter megjelenik a Feed-ben:
+
+        mitast_filter = self.browser.find_element(By.XPATH, '//a[@class="nav-link router-link-exact-active active"]')
         assert mitast_filter.is_displayed()
 
         # tag_list = []
@@ -122,6 +153,9 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
 
     # 5. Több oldalas lista bejárásának ellenőrzése:
     def test_list_of_pages(self):
+        # gombok megkeresése, oldalak listába gyűjtése:
+
+        time.sleep(2)
         login(self.browser)
 
         pages = []
@@ -130,10 +164,15 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
             page.click()
             pages.append(page)
 
+        time.sleep(2)
+        # annak ellenőrzése, hogy az oldalak listája megegyezik az oldalszámokkal:
+
         assert len(pages) == len(page_number_btns)
 
     # 6. Új adatbevitel ellenőrzése:
     def test_new_data(self):
+        # # gombok, mezők megkeresése, mezők kitöltése:
+        time.sleep(2)
         login(self.browser)
 
         new_article_btn = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
@@ -146,59 +185,92 @@ class TestConduit(object):  # Böngésző és az adott oldal megnyitása, bezár
                                                   '//textarea[@placeholder="Write your article (in markdown)"]')
         article_tags = self.browser.find_element(By.XPATH, '//input[@placeholder="Enter tags"]')
         publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
+        time.sleep(2)
 
         article_title.send_keys(article["title"])
         article_about.send_keys(article["about"])
         article_text.send_keys(article["text"])
         article_tags.send_keys(article["tags"])
         publish_article_btn.click()
+        time.sleep(2)
+
+        # annak ellenőrzése, hogy a felvitt cikk adatai sikeresen elmentődtek - a cikk címe megegyezik a dictionary-ben szereplő címmel:
 
         new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
         assert new_title.text == article["title"]
 
     # 7. Ismételt és sorozatos adatbevitel ellenőrzése adatforrásból:
-
     def test_file_data(self):
+        # külső adatforrásból adatfeltöltés, csv file megnyitása, soronkénti beolvasása:
+
+        time.sleep(2)
         login(self.browser)
-        new_article(self.browser)
 
         with open('test_vizsgaremek_conduit_CSK/cimek.csv', 'r', encoding='UTF-8') as file:
             csv_reader = csv.reader(file, delimiter=',')
+
+            articles_list = []
+
             for row in csv_reader:
-                new_file_article(self.browser, row[0], row[1], row[2], row[3])
-                new_file_article_title = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.XPATH, '//h1')))
-                assert new_file_article_title.text == row[0]
+                new_article(self.browser, row[0], row[1], row[2], row[3])
+                articles_list.append(row[0])
+
+        time.sleep(2)
+
+        # az újonnan felvitt cikk címeit összehasonlítom a megjelent új címekkel:
+
+        new_article_title = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.XPATH, '//h1')))
+        assert new_article_title.text == articles_list.text
 
 
 
     # 8. Meglévő adat módosításának ellenőrzése:
     def test_update_data(self):
+        # gombok, mezők megkeresése, cím módosítása:
+
+        time.sleep(2)
         login(self.browser)
+        time.sleep(2)
         new_article(self.browser)
 
         edit_btn = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//a[@class="btn btn-sm btn-outline-secondary"]')))
         edit_btn.click()
         article_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Article Title"]')))
-        article_title.clear()  # van ilyen?
+        time.sleep(2)
+# van ilyen?
+        article_title.clear()
         article_title.send_keys(article["title"])  # [2]  dictionary-ből kéne?
         publish_article_btn = self.browser.find_element(By.XPATH, '//button[@type="submit"]')
+
         publish_article_btn.click()
+        time.sleep(2)
+
+        # annak ellenőrzése, hogy a módosított megegyezik az adatokból felvitt címmel:
+
         new_title = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//h1')))
-        assert new_title.text == article["title"] # [2]?
+        assert new_title.text == article["title"].text  # [2]?
 
     # 9. Adat törlésének ellenőrzése:
     def test_delete_data(self):
+        # gombok megkeresése,
+
+        time.sleep(2)
         login(self.browser)
+        time.sleep(2)
         new_article(self.browser)
+        time.sleep(2)
 
         delete_btn = WebDriverWait(self.browser, 2).until(EC.presence_of_element_located((By.XPATH, '//button[@class="btn btn-outline-danger btn-sm"]')))
         delete_btn.click()
         time.sleep(2)
-        profile_name_btn = self.browser.find_element(By.XPATH,
-                                                     '//a[@href="#/[name]"]')  # adott usernek a neve az adatok-ból, milyen zárójel kell?
+
+# adott usernek a neve az adatok-ból, milyen zárójel kell? href="#/@{'name'}/"??
+        profile_name_btn = self.browser.find_element(By.XPATH, '//a[@class="nav-link"]')[4]
         profile_name_btn.click()
+        time.sleep(2)
+
         article_list = self.browser.find_element(By.XPATH, '//a[@class="router-link-exact-active active"]')
-        assert article_list.text != article["title"]  # a saját cikkek listájában nem szerepel a törölt cím, nincs kész
+        assert article_list.text != article["title"]  # a saját cikkek listájában nem szerepel a törölt cím, nincs kész, f"{adatok['title']}? mi az f? contains van?
 
 
     # 10. Adatok lementésének ellenőrzése:

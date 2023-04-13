@@ -1,25 +1,17 @@
 user = {
-        "name": "Kitti",
-        "email": "tesztkitti@teszt.com",
-        "password": "Teszt123"
+        "name": "Kitti6",
+        "email": "tesztkitti6@teszt.com",
+        "password": "Teszt1236"
 }
 
-article = [
-    {
+article = {
+
         "title": "Újratervezés program",
         "about": "Struktúraváltó képzések",
-        "main": "A képzések részletei",
+        "text": "A képzések részletei",
         "tags": "SV"
-    },
+}
 
-    {
-        "title": "Új cím",
-        "about": "Struktúraváltó képzések",
-        "main": "A képzők részletei",
-        "tags": "SV3, 2023."
-
-    }
-]
 tags = {
         "tag": "mitast"
 }
